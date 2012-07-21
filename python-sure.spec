@@ -3,7 +3,7 @@
 
 Name:           python-%{pypi_name}
 Version:        0.10.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        MIT
@@ -55,6 +55,9 @@ nosetests
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.10.3-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Tue Jun 26 2012 Bohuslav Kabrda <bkabrda@redhat.com> - 0.10.3-2
 - python-devel should be python2-devel
 - URL now points to the real homepage of the project
