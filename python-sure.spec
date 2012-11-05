@@ -2,8 +2,8 @@
 %global pypi_name sure
 
 Name:           python-%{pypi_name}
-Version:        0.10.3
-Release:        3%{?dist}
+Version:        1.0.6
+Release:        1%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        MIT
@@ -14,7 +14,7 @@ Source0:        http://pypi.python.org/packages/source/s/%{pypi_name}/%{pypi_nam
 Source1:        https://raw.github.com/gabrielfalcao/sure/master/COPYING
 # To get tests:
 # git clone https://github.com/gabrielfalcao/sure.git && cd sure
-# git checkout 0.10.3 && tar czf sure-0.10.3-tests.tgz test_sure.py
+# git checkout 1.0.6 && tar czf sure-1.0.6-tests.tgz tests/
 Source2:        %{pypi_name}-%{version}-tests.tgz
 BuildArch:      noarch
 
@@ -55,6 +55,9 @@ nosetests
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Mon Nov 05 2012 Bohuslav Kabrda <bkabrda@redhat.com> - 1.0.6-1
+- Update to 1.0.6.
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.10.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 
