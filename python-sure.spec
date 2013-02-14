@@ -3,7 +3,7 @@
 
 Name:           python-%{pypi_name}
 Version:        1.0.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        MIT
@@ -55,6 +55,9 @@ nosetests
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.0.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Mon Nov 05 2012 Bohuslav Kabrda <bkabrda@redhat.com> - 1.0.6-1
 - Update to 1.0.6.
 
