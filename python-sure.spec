@@ -1,9 +1,20 @@
+# This package contains macros that provide functionality relating to
+# Software Collections. These macros are not used in default
+# Fedora builds, and should not be blindly copied or enabled.
+# Specifically, the "scl" macro must not be defined in official Fedora
+# builds. For more information, see:
+# http://docs.fedoraproject.org/en-US/Fedora_Contributor_Documentation
+# /1/html/Software_Collections_Guide/index.html
+
+%{?scl:%scl_package python-%{pypi_name}}
+%{!?scl:%global pkg_name %{name}}
+
 # Created by pyp2rpm-0.5.1
 %global pypi_name sure
 
-Name:           python-%{pypi_name}
+Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.1.7
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -18,13 +29,12 @@ Source1:        https://raw.github.com/gabrielfalcao/sure/master/COPYING
 Source2:        %{pypi_name}-%{version}-tests.tgz
 BuildArch:      noarch
 
-BuildRequires:  python2-devel
-BuildRequires:  python-nose
-BuildRequires:  python-setuptools
+BuildRequires:  %{?scl_prefix}python2-devel
+BuildRequires:  %{?scl_prefix}python-nose
+BuildRequires:  %{?scl_prefix}python-setuptools
 
 %description
 A Python assertion toolbox that works fine with nose.
-
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
@@ -32,19 +42,21 @@ A Python assertion toolbox that works fine with nose.
 rm -rf %{pypi_name}.egg-info
 cp %{SOURCE1} .
 
-
 %build
+%{?scl:scl enable %{scl} "}
 %{__python} setup.py build
-
+%{?scl:"}
 
 %install
+%{?scl:scl enable %{scl} "}
 %{__python} setup.py install --skip-build --root %{buildroot}
-
+%{?scl:"}
 
 %check
 tar xzf %{SOURCE2}
+%{?scl:scl enable %{scl} "}
 nosetests
-
+%{?scl:"}
 
 %files
 %doc COPYING
@@ -52,6 +64,9 @@ nosetests
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Thu May 30 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 1.1.7-2
+- Introduce SCL macros in the specfile.
+
 * Mon Feb 18 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 1.1.7-1
 - Update to 1.1.7.
 - License change from MIT to GPLv3.
