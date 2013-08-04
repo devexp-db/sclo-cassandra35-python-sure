@@ -14,7 +14,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.1.7
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -64,6 +64,9 @@ nosetests
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %changelog
+* Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.7-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
 * Thu May 30 2013 Bohuslav Kabrda <bkabrda@redhat.com> - 1.1.7-2
 - Introduce SCL macros in the specfile.
 
