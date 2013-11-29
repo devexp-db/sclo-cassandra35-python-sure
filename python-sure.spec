@@ -10,11 +10,13 @@
 %{!?scl:%global pkg_name %{name}}
 
 # Created by pyp2rpm-0.5.1
+%{!?scl:%global with_python3 1}
+%{?scl:%global with_python3 0}
 %global pypi_name sure
 
 Name:           %{?scl_prefix}python-%{pypi_name}
-Version:        1.1.7
-Release:        3%{?dist}
+Version:        1.2.3
+Release:        1%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -25,7 +27,7 @@ Source0:        http://pypi.python.org/packages/source/s/%{pypi_name}/%{pypi_nam
 Source1:        https://raw.github.com/gabrielfalcao/sure/master/COPYING
 # To get tests:
 # git clone https://github.com/gabrielfalcao/sure.git && cd sure
-# git checkout 1.1.7 && tar czf sure-1.1.7-tests.tgz tests/
+# git checkout 2d1a71d618 && tar czf sure-1.2.3-tests.tgz tests/
 Source2:        %{pypi_name}-%{version}-tests.tgz
 BuildArch:      noarch
 
@@ -33,37 +35,84 @@ BuildRequires:  %{?scl_prefix}python2-devel
 BuildRequires:  %{?scl_prefix}python-nose
 BuildRequires:  %{?scl_prefix}python-setuptools
 
+%if 0%{with_python3}
+BuildRequires:  %{?scl_prefix}python3-devel
+BuildRequires:  %{?scl_prefix}python3-nose
+BuildRequires:  %{?scl_prefix}python3-setuptools
+%endif
+
 %description
 A Python assertion toolbox that works fine with nose.
+
+%if 0%{?with_python3}
+%package -n python3-%{pypi_name}
+Summary:        Assertion toolbox for python 3
+
+%description -n python3-%{pypi_name}
+A Python assertion toolbox that works fine with nose.
+%endif # with_python3
 
 %prep
 %setup -q -n %{pypi_name}-%{version}
 # Remove bundled egg-info
 rm -rf %{pypi_name}.egg-info
 cp %{SOURCE1} .
+tar xzf %{SOURCE2}
+
+%if 0%{?with_python3}
+rm -rf %{py3dir}
+cp -a . %{py3dir}
+find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!/bin/env python|#!%{__python3}|'
+%endif # with_python3
 
 %build
 %{?scl:scl enable %{scl} "}
 %{__python} setup.py build
 %{?scl:"}
 
+%if 0%{with_python3}
+pushd %{py3dir}
+%{__python3} setup.py build
+popd
+%endif
+
 %install
 %{?scl:scl enable %{scl} "}
 %{__python} setup.py install --skip-build --root %{buildroot}
 %{?scl:"}
 
+%if 0%{?with_python3}
+pushd %{py3dir}
+%{__python3} setup.py install --skip-build --root %{buildroot}
+popd
+%endif # with_python3
+
 %check
-tar xzf %{SOURCE2}
 %{?scl:scl enable %{scl} "}
 nosetests
 %{?scl:"}
+
+%if 0%{?with_python3}
+pushd %{py3dir}
+/usr/bin/nosetests-3*
+popd
+%endif # with_python3
 
 %files
 %doc COPYING
 %{python_sitelib}/%{pypi_name}
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
+%files -n python3-%{pypi_name}
+%doc COPYING
+%{python3_sitelib}/%{pypi_name}
+%{python3_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
+
 %changelog
+* Fri Nov 29 2013 Miro Hrončok <mhroncok@redhat.com> - 1.2.3-1
+- Updated
+- Introduced Python 3 subpackage
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.1.7-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
