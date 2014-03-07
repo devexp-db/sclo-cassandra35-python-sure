@@ -10,12 +10,16 @@
 %{!?scl:%global pkg_name %{name}}
 
 # Created by pyp2rpm-0.5.1
-%{!?scl:%global with_python3 1}
-%{?scl:%global with_python3 0}
+# if building for SCL or on RHEL, don't build python3- subpackage
+%if %{?scl:0}%{!?scl:1} && %{?rhel:0}%{!?rhel:1}
+%global with_python3 1
+%else
+%global with_python3 0
+%endif
 %global pypi_name sure
 
 Name:           %{?scl_prefix}python-%{pypi_name}
-Version:        1.2.3
+Version:        1.2.5
 Release:        1%{?dist}
 Summary:        Assertion toolbox for python
 
@@ -27,7 +31,7 @@ Source0:        http://pypi.python.org/packages/source/s/%{pypi_name}/%{pypi_nam
 Source1:        https://raw.github.com/gabrielfalcao/sure/master/COPYING
 # To get tests:
 # git clone https://github.com/gabrielfalcao/sure.git && cd sure
-# git checkout 2d1a71d618 && tar czf sure-1.2.3-tests.tgz tests/
+# git checkout 1.2.5 && tar czf sure-1.2.5-tests.tgz tests/
 Source2:        %{pypi_name}-%{version}-tests.tgz
 BuildArch:      noarch
 
@@ -72,7 +76,7 @@ find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!/bin/env python|#!%{__python3}
 
 %if 0%{with_python3}
 pushd %{py3dir}
-%{__python3} setup.py build
+LANG=en_US.utf8 %{__python3} setup.py build
 popd
 %endif
 
@@ -83,7 +87,7 @@ popd
 
 %if 0%{?with_python3}
 pushd %{py3dir}
-%{__python3} setup.py install --skip-build --root %{buildroot}
+LANG=en_US.utf8 %{__python3} setup.py install --skip-build --root %{buildroot}
 popd
 %endif # with_python3
 
@@ -103,12 +107,18 @@ popd
 %{python_sitelib}/%{pypi_name}
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
+%if 0%{?with_python3}
 %files -n python3-%{pypi_name}
 %doc COPYING
 %{python3_sitelib}/%{pypi_name}
 %{python3_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
+%endif
 
 %changelog
+* Fri Mar 07 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.2.5-1
+- Updated to 1.2.5
+- Fix with_python3 macro definition to work correctly on EPEL, too.
+
 * Fri Nov 29 2013 Miro Hrončok <mhroncok@redhat.com> - 1.2.3-1
 - Updated
 - Introduced Python 3 subpackage
