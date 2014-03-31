@@ -20,7 +20,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.2.5
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -33,6 +33,9 @@ Source1:        https://raw.github.com/gabrielfalcao/sure/master/COPYING
 # git clone https://github.com/gabrielfalcao/sure.git && cd sure
 # git checkout 1.2.5 && tar czf sure-1.2.5-tests.tgz tests/
 Source2:        %{pypi_name}-%{version}-tests.tgz
+# Remove unnecessary dependencies in setup.py which might break
+# depending packages builds, https://github.com/gabrielfalcao/sure/pull/57
+Patch0:         sure-remove-unnecessary-dependencies.patch
 BuildArch:      noarch
 
 BuildRequires:  %{?scl_prefix}python2-devel
@@ -62,6 +65,8 @@ A Python assertion toolbox that works fine with nose.
 rm -rf %{pypi_name}.egg-info
 cp %{SOURCE1} .
 tar xzf %{SOURCE2}
+
+%patch0 -p1
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -115,6 +120,10 @@ popd
 %endif
 
 %changelog
+* Mon Mar 31 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.2.5-2
+- Remove unneeded dependencies from setup.py.
+Resolves: rhbz#1082400
+
 * Fri Mar 07 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.2.5-1
 - Updated to 1.2.5
 - Fix with_python3 macro definition to work correctly on EPEL, too.
