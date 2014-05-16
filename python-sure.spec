@@ -20,7 +20,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.2.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -120,6 +120,9 @@ popd
 %endif
 
 %changelog
+* Wed May 14 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.2.5-3
+- Rebuilt for https://fedoraproject.org/wiki/Changes/Python_3.4
+
 * Mon Mar 31 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.2.5-2
 - Remove unneeded dependencies from setup.py.
 Resolves: rhbz#1082400
