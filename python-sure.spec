@@ -20,7 +20,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.2.5
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -120,6 +120,9 @@ popd
 %endif
 
 %changelog
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.5-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
 * Wed May 14 2014 Bohuslav Kabrda <bkabrda@redhat.com> - 1.2.5-3
 - Rebuilt for https://fedoraproject.org/wiki/Changes/Python_3.4
 
