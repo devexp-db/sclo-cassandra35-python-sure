@@ -19,8 +19,8 @@
 %global pypi_name sure
 
 Name:           %{?scl_prefix}python-%{pypi_name}
-Version:        1.2.5
-Release:        4%{?dist}
+Version:        1.2.7
+Release:        1%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -31,21 +31,23 @@ Source0:        http://pypi.python.org/packages/source/s/%{pypi_name}/%{pypi_nam
 Source1:        https://raw.github.com/gabrielfalcao/sure/master/COPYING
 # To get tests:
 # git clone https://github.com/gabrielfalcao/sure.git && cd sure
-# git checkout 1.2.5 && tar czf sure-1.2.5-tests.tgz tests/
+# git checkout 9fe8fd0 && tar czf sure-1.2.7-tests.tgz tests/
 Source2:        %{pypi_name}-%{version}-tests.tgz
-# Remove unnecessary dependencies in setup.py which might break
-# depending packages builds, https://github.com/gabrielfalcao/sure/pull/57
-Patch0:         sure-remove-unnecessary-dependencies.patch
 BuildArch:      noarch
 
 BuildRequires:  %{?scl_prefix}python2-devel
+BuildRequires:  %{?scl_prefix}python-mock
 BuildRequires:  %{?scl_prefix}python-nose
 BuildRequires:  %{?scl_prefix}python-setuptools
+BuildRequires:  %{?scl_prefix}python-six
+Requires:       %{?scl_prefix}python-six
 
 %if 0%{with_python3}
 BuildRequires:  %{?scl_prefix}python3-devel
+BuildRequires:  %{?scl_prefix}python3-mock
 BuildRequires:  %{?scl_prefix}python3-nose
 BuildRequires:  %{?scl_prefix}python3-setuptools
+BuildRequires:  %{?scl_prefix}python3-six
 %endif
 
 %description
@@ -54,6 +56,7 @@ A Python assertion toolbox that works fine with nose.
 %if 0%{?with_python3}
 %package -n python3-%{pypi_name}
 Summary:        Assertion toolbox for python 3
+Requires:       %{?scl_prefix}python3-six
 
 %description -n python3-%{pypi_name}
 A Python assertion toolbox that works fine with nose.
@@ -65,8 +68,6 @@ A Python assertion toolbox that works fine with nose.
 rm -rf %{pypi_name}.egg-info
 cp %{SOURCE1} .
 tar xzf %{SOURCE2}
-
-%patch0 -p1
 
 %if 0%{?with_python3}
 rm -rf %{py3dir}
@@ -120,6 +121,9 @@ popd
 %endif
 
 %changelog
+* Fri Nov 14 2014 Slavek Kabrda <bkabrda@redhat.com> - 1.2.7-1
+- Updated to 1.2.7
+
 * Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.5-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 
