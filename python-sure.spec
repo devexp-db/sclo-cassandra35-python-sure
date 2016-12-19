@@ -20,7 +20,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.2.7
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Assertion toolbox for python
 
 License:        GPLv3+
@@ -121,6 +121,9 @@ popd
 %endif
 
 %changelog
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1.2.7-6
+- Rebuild for Python 3.6
+
 * Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.7-5
 - https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
 
