@@ -22,7 +22,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.4.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        %{sum}
 
 License:        GPLv3+
@@ -125,6 +125,9 @@ popd
 %endif
 
 %changelog
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
 * Wed Dec 21 2016 Adam Williamson <awilliam@redhat.com> - 1.4.0-1
 - New release 1.4.0 (builds against Python 3.6)
 - Drop sources merged upstream
