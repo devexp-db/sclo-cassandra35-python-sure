@@ -11,7 +11,7 @@
 
 # Created by pyp2rpm-0.5.1
 # if building for SCL or on RHEL, don't build python3- subpackage
-%if %{?scl:0}%{!?scl:1} && %{?rhel:0}%{!?rhel:1}
+%if 0%{?fedora} || 0%{?rhel} > 7
 %global with_python3 1
 %else
 %global with_python3 0
@@ -22,7 +22,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.4.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        %{sum}
 
 License:        GPLv3+
@@ -125,6 +125,9 @@ popd
 %endif
 
 %changelog
+* Fri Sep 29 2017 Troy Dawson <tdawson@redhat.com> - 1.4.0-4
+- Cleanup spec file conditionals
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 
