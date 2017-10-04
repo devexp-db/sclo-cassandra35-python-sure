@@ -9,6 +9,8 @@
 %{?scl:%scl_package python-%{pypi_name}}
 %{!?scl:%global pkg_name %{name}}
 
+%global run_tests 0
+
 # Created by pyp2rpm-0.5.1
 # if building for SCL or on RHEL, don't build python3- subpackage
 %if 0%{?fedora} || 0%{?rhel} > 7
@@ -22,7 +24,7 @@
 
 Name:           %{?scl_prefix}python-%{pypi_name}
 Version:        1.4.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 Summary:        %{sum}
 
 License:        GPLv3+
@@ -30,40 +32,44 @@ URL:            https://github.com/gabrielfalcao/sure
 Source0:        https://files.pythonhosted.org/packages/source/s/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
 BuildArch:      noarch
 
-BuildRequires:  %{?scl_prefix}python2-devel
-BuildRequires:  %{?scl_prefix}python-mock
-BuildRequires:  %{?scl_prefix}python-nose
-BuildRequires:  %{?scl_prefix}python-setuptools
-BuildRequires:  %{?scl_prefix}python-six
-Requires:       %{?scl_prefix}python-six
+BuildRequires:  python2-devel
+# python-mock is only needed for tests
+#BuildRequires:  python-mock
+BuildRequires:  python-nose
+BuildRequires:  python-setuptools
+BuildRequires:  python-six
+Requires:       python-six
 
 %if 0%{with_python3}
-BuildRequires:  %{?scl_prefix}python3-devel
-BuildRequires:  %{?scl_prefix}python3-mock
-BuildRequires:  %{?scl_prefix}python3-nose
-BuildRequires:  %{?scl_prefix}python3-setuptools
-BuildRequires:  %{?scl_prefix}python3-six
+BuildRequires:  python3-devel
+BuildRequires:  python3-mock
+BuildRequires:  python3-nose
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-six
 %endif
+
+%{?scl:Requires: %scl_runtime}
+%{?scl:BuildRequires: %scl-scldevel}
 
 %description
 A testing library for Python with powerful and flexible assertions. Sure is
 heavily inspired by should.js.
 
-%package -n python2-%{pypi_name}
+%package -n %{?scl_prefix}python2-%{pypi_name}
 Summary:        %{sum} 2
-%{?python_provide:%python_provide python2-%{pypi_name}}
+%{!?scl:%{?python_provide:%python_provide python2-%{pypi_name}}}
 
-%description -n python2-%{pypi_name}
+%description -n %{?scl_prefix}python2-%{pypi_name}
 A testing library for Python with powerful and flexible assertions. Sure is
 heavily inspired by should.js.
 
 %if 0%{?with_python3}
-%package -n python3-%{pypi_name}
+%package -n %{?scl_prefix}python3-%{pypi_name}
 Summary:        %{sum} 3
-%{?python_provide:%python_provide python3-%{pypi_name}}
-Requires:       %{?scl_prefix}python3-six
+%{!?scl:%{?python_provide:%python_provide python3-%{pypi_name}}}
+Requires:       python3-six
 
-%description -n python3-%{pypi_name}
+%description -n %{?scl_prefix}python3-%{pypi_name}
 A testing library for Python with powerful and flexible assertions. Sure is
 heavily inspired by should.js.
 %endif # with_python3
@@ -80,27 +86,28 @@ find %{py3dir} -name '*.py' | xargs sed -i '1s|^#!/bin/env python|#!%{__python3}
 %endif # with_python3
 
 %build
-%{?scl:scl enable %{scl} "}
+%{?scl:scl enable %{scl} - << "EOF"}
 %py2_build
-%{?scl:"}
 
 %if 0%{with_python3}
 pushd %{py3dir}
 LANG=en_US.utf8 %py3_build
 popd
 %endif
+%{?scl:EOF}
 
 %install
-%{?scl:scl enable %{scl} "}
-%py2_install
-%{?scl:"}
+%{?scl:scl enable %{scl} - << "EOF"}
+%{py2_install -- --prefix %{?_prefix}}
 
 %if 0%{?with_python3}
 pushd %{py3dir}
-LANG=en_US.utf8 %py3_install
+LANG=en_US.utf8 %{py3_install -- --prefix %{?_prefix}}
 popd
 %endif # with_python3
+%{?scl:EOF}
 
+%if 0%{?run_tests}
 %check
 %{?scl:scl enable %{scl} "}
 %{__python2} setup.py test
@@ -111,20 +118,24 @@ pushd %{py3dir}
 %{__python3} setup.py test
 popd
 %endif # with_python3
+%endif
 
-%files -n python2-%{pypi_name}
+%files -n %{?scl_prefix}python2-%{pypi_name}
 %doc COPYING
 %{python2_sitelib}/%{pypi_name}
 %{python2_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 
 %if 0%{?with_python3}
-%files -n python3-%{pypi_name}
+%files -n %{?scl_prefix}python3-%{pypi_name}
 %doc COPYING
 %{python3_sitelib}/%{pypi_name}
 %{python3_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 %endif
 
 %changelog
+* Tue Oct 03 2017 Augusto Mecking Caringi <acaringi@redhat.com> - 1.4.0-5
+- scl fixing
+
 * Fri Sep 29 2017 Troy Dawson <tdawson@redhat.com> - 1.4.0-4
 - Cleanup spec file conditionals
 
